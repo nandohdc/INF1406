@@ -1,13 +1,13 @@
 /**
  * Created by nando on 3/26/2017.
  */
-public class fork {
+public class Fork {
 
     private final int id;
 
-    private static boolean using; // Not using: False, using: true
+    private volatile boolean using; // Not using: False, using: true
 
-    public fork (int newId){
+    public Fork(int newId){
         id = newId;
         using = false;
         System.out.println("Fork #"+ this.id+ " has benn created." );
@@ -17,7 +17,7 @@ public class fork {
         return this.id;
     }
 
-    private String getStringFork(){
+    public String getStringFork(){
         return "Fork#" + this.getIdFork();
     }
 
