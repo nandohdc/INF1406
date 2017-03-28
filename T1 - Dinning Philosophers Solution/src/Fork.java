@@ -8,8 +8,8 @@ public class Fork {
     private volatile boolean using; // Not using: False, using: true
 
     public Fork (int newId){
-        id = newId;
-        using = false;
+        this.id = newId;
+        this.using = false;
         System.out.println("Fork #"+ this.id+ " has benn created." );
     }
 
@@ -21,7 +21,7 @@ public class Fork {
         return "Fork#" + this.getIdFork();
     }
 
-    private boolean getUsing(){
+    public boolean getUsing(){
         return this.using;
     }
 
@@ -30,17 +30,17 @@ public class Fork {
     }
 
 
-    public boolean pickUp(){
+    public void pickUp(String Philosopher){
         if(!this.getUsing()) {
-            this.changeUsing(!getUsing());
-            return true;
+            System.out.println(Philosopher + " is picking up the " + getStringFork());
+            this.changeUsing(true);
         }
         else
-            return false;
+            System.out.println(Philosopher + " couldn't take the " + getStringFork());
     }
 
     public void putDown(String Philosopher){
         System.out.println(Philosopher + " is puttin down the " + getStringFork());
-        this.changeUsing(!getUsing());
+        this.changeUsing(false);
     }
 }

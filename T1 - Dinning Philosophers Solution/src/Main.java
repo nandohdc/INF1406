@@ -25,6 +25,12 @@ public class Main {
             Philosophers[i] = new Philosopher(i, forks[i], forks[i+1]);
         }
 
+        Philosophers[0].initializingNeighbors(Philosophers[4], Philosophers[1]);
+        Philosophers[1].initializingNeighbors(Philosophers[0], Philosophers[2]);
+        Philosophers[2].initializingNeighbors(Philosophers[1], Philosophers[3]);
+        Philosophers[3].initializingNeighbors(Philosophers[2], Philosophers[4]);
+        Philosophers[4].initializingNeighbors(Philosophers[3], Philosophers[0]);
+
         for(int k = 0 ; k < NO_OF_PHILOSOPHERS; k++){
             Threads[k] = new Thread(Philosophers[k]);
             Threads[k].start();

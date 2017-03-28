@@ -6,12 +6,28 @@ public class Philosopher implements Runnable {
     private final int id;
     private final Fork leftFork;
     private final Fork rightFork;
+    private volatile String state;
+    private Philosopher neighborLeft;
+    private Philosopher neighborRight;
 
     public Philosopher(int newId, Fork newLeftFork, Fork newRightFork){
         this.id = newId;
         this.leftFork = newLeftFork;
         this.rightFork = newRightFork;
-        System.out.println("Philosopher #"+ this.id+ ": " + "My number is " + this.id);
+        this.state = "HUNGRY";
+        System.out.println("Philosopher #"+ this.id+ ": " + "My number is " + this.id + " and My Forks are " + this.leftFork.getStringFork() + " "+ this.rightFork.getStringFork());
+    }
+    public void initializingNeighbors(Philosopher Left, Philosopher Right){
+        this.neighborLeft = Left;
+        this.neighborRight = Right;
+    }
+
+    public String getState(){
+        return this.state;
+    }
+
+    private void setState(String newState){
+        this.state = newState;
     }
 
     private int getIdPhilosopher(){
@@ -28,78 +44,48 @@ public class Philosopher implements Runnable {
         System.out.println(getNamePhilosopher() + " is Running");
         while(true) {
             this.think();
-            //this.take_left_fork();
-            //this.take_right_fork();
-            if(this.take_left_fork() && this.take_right_fork()){
-                this.eat();
-                this.put_left_fork();
-                this.put_right_fork();
-            } else{
-                this.put_left_fork();
-                this.put_right_fork();
-            }
+            this.take_forks();
+            eat();
+            this.put_forks();
         }
     }
 
     private void think(){
-
         System.out.println(getNamePhilosopher() + " is thinking about his life.");
         try {
-            Thread.sleep(5000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
     private void eat(){
-
         System.out.println(getNamePhilosopher() + " is eating.");
         try {
-            Thread.sleep(5000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    private boolean take_left_fork(){
-        if(this.leftFork.pickUp()){
-            System.out.println(this.getNamePhilosopher() + " took " + this.leftFork.getStringFork());
-            return true;
-        } else{
-            System.out.println(this.getNamePhilosopher() + " couldn't take the " + this.leftFork.getStringFork());
-            return false;
+    private void checkForks(Philosopher p){
+        if(p.getState().equals("HUNGRY") && !p.neighborLeft.getState().equals("EATING") && !p.neighborRight.getState().equals("EATING")){
+            p.leftFork.pickUp(p.getNamePhilosopher());
+            p.rightFork.pickUp(p.getNamePhilosopher());
+            p.setState("EATING");
         }
     }
 
-    private boolean take_right_fork(){
-        if(this.rightFork.pickUp()){
-            System.out.println(this.getNamePhilosopher() + " took " + this.leftFork.getStringFork());
-            return true;
-        } else{
-            System.out.println(this.getNamePhilosopher() + " couldn't take the " + this.rightFork.getStringFork());
-            return false;
-        }
+    private void take_forks(){
+        this.setState("HUNGRY");
+        this.checkForks(this);
     }
 
-    private boolean take_fork(){
-        if(this.leftFork.pickUp()){
-            if(this.rightFork.pickUp()){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void put_left_fork(){
-        this.leftFork.putDown(getNamePhilosopher());
-    }
-
-    private void put_right_fork(){
-        this.rightFork.putDown(getNamePhilosopher());
-    }
-
-    private void put_fork(){
-        this.leftFork.putDown(getNamePhilosopher());
-        this.rightFork.putDown(getNamePhilosopher());
+    private void put_forks(){
+        this.setState("THINKING");
+        this.checkForks(this.neighborLeft);
+        this.checkForks(this.neighborRight);
+        this.leftFork.putDown(this.getNamePhilosopher());
+        this.rightFork.putDown(this.getNamePhilosopher());
     }
 }
