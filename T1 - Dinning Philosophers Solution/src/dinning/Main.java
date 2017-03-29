@@ -1,6 +1,10 @@
 /**
- * Created by Fernando on 3/28/17.
+ * Created by Fernando Homem da Costa on 3/25/2017.
+ * Dinning Philosophers Solutuion
  */
+
+package dinning;
+
 public class Main {
     public static void main(String[] args) {
         // TODO Auto-generated method stub
@@ -38,3 +42,4 @@ public class Main {
 
     }
 }
+

@@ -1,7 +1,8 @@
 /**
- * Created by nando on 3/25/2017.
+ * Created by Fernando Homem da Costa on 3/25/2017.
+ * Dinning Philosophers enforcing deadlock
  */
-
+package dinning;
 public class Main {
 
     public static void main(String[] args) {
