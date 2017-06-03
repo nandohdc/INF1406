@@ -5,7 +5,7 @@ import java.util.concurrent.Callable;
 /**
  * Created by nando on 4/18/2017.
  */
-public class MatricesMultiplication implements Serializable,Runnable {
+public class MatricesMultiplication implements Serializable,Runnable  {
     /**
 	 * 
 	 */
@@ -38,7 +38,11 @@ public class MatricesMultiplication implements Serializable,Runnable {
     @Override
     public void run() {
         System.out.println("Hello");
-        this.execute();
+        //this.execute();
+        for(int i = 0; i < this.MatrixLine.length; i++){
+            this.result += this.MatrixLine[i]*this.MatrixColumn[i];
+            System.out.println(this.result + this.MatrixLine[i] + this.MatrixColumn[i]);
+        }
         Result resultado = this.CallbackTask.getResultado();
         resultado.setResultado(result);
         this.CallbackTask.entregaResultado(resultado);

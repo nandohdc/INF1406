@@ -81,8 +81,8 @@ public class Matrices implements Serializable{
     }
 
     private Matrix MultiplicationMatrices(Matrix A, Matrix B) throws RemoteException {
-        ExecutorService executor = Executors.newFixedThreadPool(this.MaxThreads);
-        List<Future<Double>> list = new ArrayList<Future<Double>>();
+        //ExecutorService executor = Executors.newFixedThreadPool(this.MaxThreads);
+        //List<Future<Double>> list = new ArrayList<Future<Double>>();
 
         for(int i = 0; i < this.dimension; i++){
             for(int j = 0; j < this.dimension; j++) {
