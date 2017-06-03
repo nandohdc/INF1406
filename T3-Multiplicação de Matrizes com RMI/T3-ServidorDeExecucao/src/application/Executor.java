@@ -25,7 +25,7 @@ public class Executor extends RemoteObject implements Configuracao{
 		// TODO Auto-generated method stub
         //this.executor.execute((Runnable) task);
         System.out.println("Hello");
-        this.executor.execute(task);
+        this.executor.submit(task);
 	}
 }
 
