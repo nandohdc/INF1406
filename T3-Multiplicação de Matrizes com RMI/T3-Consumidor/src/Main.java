@@ -1,5 +1,6 @@
 import application.*;
-import configuracao.Configuracao;
+import configuracao.Execucao;
+import configuracao.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.rmi.NotBoundException;
@@ -13,6 +14,8 @@ import java.rmi.registry.Registry;
 public class Main {
     private static final int Port = 2000;
     private static String consumidorName = null;
+    private static String produtorName = null;
+    private static String execucaoName = null;
 
     public static void main(String[] args) {
         if (args.length != 4) {
@@ -22,15 +25,17 @@ public class Main {
 
         System.out.println("Consumidor: STARTING");
         //Pegar o policy
-        System.setProperty("java.rmi.server.hostname", "10.80.70.121");
+        System.setProperty("java.rmi.server.hostname", "127.0.0.1");
         System.setProperty("java.security.policy", "consumidor.policy");
 
         //Path codeBase = Paths.get(System.getProperty("java.class.path"));
-        Path codeBase = Paths.get("C:\\Users\\nando\\OneDrive\\Documentos\\GitHub\\INF1406\\T3-Multiplicação de Matrizes com RMI\\T3-Consumidor\\out\\production\\T3-Consumidor");
+        Path codeBase = Paths.get("C:\\Users\\nando\\Documents\\GitHub\\INF1406\\T3-Multiplicação de Matrizes com RMI\\T3-Consumidor\\out\\production\\T3-Consumidor");
         System.setProperty("java.rmi.server.codebase",codeBase.toUri().toString());
         System.setProperty("java.rmi.server.useCodebaseOnly", "false");
 
         consumidorName = "Consumidor";
+        produtorName = "Produtor";
+        execucaoName = "ServerDeExecucao";
 
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
@@ -41,15 +46,30 @@ public class Main {
         int MatrixDimension = Integer.parseInt(args[1]);
         int MaxThreads = Integer.parseInt(args[2]);
         int MaxMatrices = Integer.parseInt(args[3]);
+        /*String hostProdutor = args[0];
+        int portProdutor = Integer.parseInt(args[1]);
+        String hostExecucao = args[2];
+        int portExecucao = Integer.parseInt(args[3]);*/
+
+        String hostProdutor = "127.0.0.1";
+        int portProdutor = 2000;
+        String hostExecucao = "127.0.0.1";
+        int portExecucao = 2000;
 
         System.out.println(path + MatrixDimension + MaxThreads + MaxMatrices);
 
         Registry regServer = null;
-        Configuracao ObjExecutor = null;
+        Registry regProdutor = null;
+        Execucao ObjExecutor = null;
 
         try{
-            regServer = LocateRegistry.getRegistry("10.80.70.121", Port);
-            ObjExecutor = (Configuracao)regServer.lookup("ServidorDeExecucao");
+            regProdutor = LocateRegistry.getRegistry(hostProdutor, portProdutor);
+            Produtor produtorStub = (Produtor) regProdutor.lookup(produtorName);
+
+            regServer = LocateRegistry.getRegistry(hostExecucao, portExecucao);
+            Execucao execucaoStub = (Execucao) regServer.lookup(execucaoName);
+
+            ObjExecutor = (Execucao)regServer.lookup("Execucao");
             Matrices matrices = new Matrices(MatrixDimension, MaxThreads, MaxMatrices, ObjExecutor);
             Reader reader = new Reader(path  + "matrix.txt", MatrixDimension);
             reader.openFile();

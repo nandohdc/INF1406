@@ -10,12 +10,8 @@ import java.rmi.RemoteException;
  */
 public interface Callback extends Remote {
 
-    public void inicializaMatriz();
-
-    public void insereResultado(Result newResultado, int line, int column);
-
     public void entregaResultado(Result resultado, int line, int column) throws RemoteException;
 
-    public Double[][] getResultado() throws RemoteException;
+    public Double[][] getResultado() throws RemoteException, InterruptedException;
 
 }

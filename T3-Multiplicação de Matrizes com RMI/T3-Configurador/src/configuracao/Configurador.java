@@ -8,7 +8,6 @@ import java.rmi.RemoteException;
 
 /* Contrato entre Servidor de Execução e o tarefa
 * Quem vai implementar é o Servidor de execução, pois ele é quem recebe a tarefa para executar*/
-public interface Configuracao extends Remote  {
-        public void execute(Runnable task) throws RemoteException;
-        public void shut_down() throws RemoteException;
+public interface Configurador extends Remote{
+	void aplicaIntervalo(int intervalo) throws RemoteException;
 }

@@ -1,5 +1,8 @@
 package application;
+import configuracao.Callback;
 import configuracao.Tarefa;
+
+import java.rmi.RemoteException;
 
 /**
  * Created by nando on 4/18/2017.
@@ -51,7 +54,12 @@ public class MatricesMultiplication implements configuracao.MatricesMultiplicati
             System.out.println(this.result + this.MatrixLine[i] + this.MatrixColumn[i]);
         }
         resultado.setResultado(result);
-        this.CallbackTask.entregaResultado(resultado, resultado.getLineResultado(), resultado.getColumnResultado());
-        this.CallbackTask.printMatrixResultado();
+        System.out.println( "MM: " + Thread.currentThread().getName());
+        try {
+            this.CallbackTask.entregaResultado(resultado, resultado.getLineResultado(), resultado.getColumnResultado());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
     }
 }

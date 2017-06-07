@@ -1,12 +1,12 @@
 package application;
 import java.rmi.RemoteException;
 import java.util.concurrent.*;
-import configuracao.Configuracao;
+import configuracao.Execucao;
 
 /**
  * Created by Fernando && T�ssio on 5/30/17.
  */
-public class Servidor implements Configuracao{
+public class Servidor implements Execucao {
     private final int numOfThread;
 	private  ExecutorService executor = null;
 

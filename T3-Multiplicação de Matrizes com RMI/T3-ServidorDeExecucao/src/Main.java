@@ -1,9 +1,9 @@
-package application;
 /**
  * Created by Fernando on 5/30/17.
  */
 
-import configuracao.Configuracao;
+import application.Servidor;
+import configuracao.Execucao;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.rmi.RemoteException;
@@ -33,17 +33,17 @@ public class Main {
         System.out.println("Servidor de Execucao: STARTING");
 
         //Pegar o policy
-        System.setProperty("java.rmi.server.hostname", "10.80.70.121");
+        System.setProperty("java.rmi.server.hostname", "127.0.0.1");
         System.setProperty("java.security.policy", "server.policy");
 
         //Pegar CodeBase
         //System.out.println(System.getProperty("java.class.path"));
         //Path codeBase = Paths.get(System.getProperty("java.class.path")); -- Erro com Fernando
-        Path codeBase = Paths.get("C:\\Users\\nando\\OneDrive\\Documentos\\GitHub\\INF1406\\T3-Multiplicação de Matrizes com RMI\\T3-ServidorDeExecucao\\out\\production\\T3-ServidorDeExecucao");
+        Path codeBase = Paths.get("C:\\Users\\nando\\Documents\\GitHub\\INF1406\\T3-Multiplicação de Matrizes com RMI\\T3-ServidorDeExecucao\\out\\production\\T3-ServidorDeExecucao");
         System.setProperty("java.rmi.server.codebase", codeBase.toUri().toString());
         System.setProperty("java.rmi.server.useCodebaseOnly", "false");
 
-        serverName = "ServidorDeExecucao";
+        serverName = "Execucao";
 
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
@@ -51,11 +51,11 @@ public class Main {
 
         //Criar o Objeto remoto
         Servidor servidor = new Servidor(MaxThread);
-        Configuracao servidorStub = null;
+        Execucao servidorStub = null;
         Registry registry = null;
         try {
             registry = LocateRegistry.createRegistry(Port); //Porta
-            servidorStub = (Configuracao) UnicastRemoteObject.exportObject(servidor, 0);
+            servidorStub = (Execucao) UnicastRemoteObject.exportObject(servidor, 0);
             registry.rebind(serverName, servidorStub);
             //Tenta fazer o bind com servidor de execucao
         } catch (RemoteException exception) {

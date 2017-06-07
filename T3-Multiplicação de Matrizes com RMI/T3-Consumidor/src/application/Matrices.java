@@ -1,12 +1,11 @@
 package application;
-import configuracao.Configuracao;
+import configuracao.Execucao;
 import configuracao.Matrizes;
+import configuracao.Callback;
 
-import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
-import java.util.concurrent.*;
 
 /**
  * Created by nando on 4/18/2017.
@@ -23,12 +22,12 @@ public class Matrices implements Matrizes{
     private Matrix result;
     private int MaxThreads;
     private long time;
-    private Configuracao object;
+    private Execucao object;
     private Result resultado;
-    private Callback cbTask;
+    private CallbackImp cbTask;
 
 
-    public Matrices(int MatricesDimension, int NumberOfThreads, int numMatrices, Configuracao newObject){
+    public Matrices(int MatricesDimension, int NumberOfThreads, int numMatrices, Execucao newObject){
         this.nMatrices = numMatrices;
         this.dimension = MatricesDimension;
         this.MaxThreads = NumberOfThreads;
@@ -83,22 +82,29 @@ public class Matrices implements Matrizes{
     }
 
     public Matrix MultiplicationMatrices(Matrix A, Matrix B) {
-        this.cbTask = new Callback(this.dimension);
-        this.cbTask.inicializaMatriz();
-        for(int i = 0; i < this.dimension; i++){
-            for(int j = 0; j < this.dimension; j++) {
-                MatricesMultiplication task = new MatricesMultiplication(A.getLine(i), B.getColumn(j), i, j, cbTask);
-                try {
-                    this.object.execute(task);
-                } catch(RemoteException e){
-                    System.out.println("Consumidor: Erro ao executar o objeto remoto");
-                    System.exit(1);
-                }
+        this.cbTask = new CallbackImp(this.dimension);
+        try {
+            Callback callbackStub = (Callback) UnicastRemoteObject.exportObject(this.cbTask, 0);
+            for(int i = 0; i < this.dimension; i++){
+                for(int j = 0; j < this.dimension; j++) {
+                    MatricesMultiplication task = new MatricesMultiplication(A.getLine(i), B.getColumn(j), i, j, callbackStub);
+                    try {
+                        this.object.execute(task);
+                    } catch(RemoteException e){
+                        System.out.println("Consumidor: Erro ao executar o objeto remoto");
+                        System.exit(1);
+                    }
 
+                }
             }
+            this.cbTask.getResultado();
+            this.cbTask.printMatrixResultado();
+            return this.result;
+        } catch (RemoteException | InterruptedException e )  {
+            e.printStackTrace();
         }
-        this.cbTask.printMatrixResultado();
-        return this.result;
+
+        return null;
     }
 }
 
