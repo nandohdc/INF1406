@@ -10,4 +10,5 @@ import java.util.concurrent.Future;
  */
 public interface Configuracao extends Remote  {
     public void execute(Runnable task) throws RemoteException;
+    public void shut_down() throws RemoteException;
 }

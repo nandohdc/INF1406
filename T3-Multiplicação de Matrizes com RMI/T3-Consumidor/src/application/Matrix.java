@@ -5,8 +5,7 @@ import java.util.List;
 /**
  * Created by nando on 4/18/2017.
  */
-public class Matrix implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Matrix implements configuracao.Matriz {
     private int columns;
     private int lines;
     private double[][] matrix;

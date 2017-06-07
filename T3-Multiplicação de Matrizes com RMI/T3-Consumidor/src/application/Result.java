@@ -7,9 +7,7 @@ import java.io.Serializable;
 /**
  * Created by nando on 6/3/2017.
  */
-public class Result implements Serializable, Resultado{
-    private static final long serialVersionUID = 1L;
-
+public class Result implements Resultado{
     private Double result;
     private int line;
     private int column;
@@ -29,6 +27,16 @@ public class Result implements Serializable, Resultado{
     @Override
     public Double getResultado() {
         return this.result;
+    }
+
+    @Override
+    public int getLineResultado() {
+        return this.line;
+    }
+
+    @Override
+    public int getColumnResultado() {
+        return this.column;
     }
 
     @Override

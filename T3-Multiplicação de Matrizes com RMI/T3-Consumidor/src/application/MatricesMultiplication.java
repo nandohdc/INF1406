@@ -1,11 +1,10 @@
 package application;
-import java.io.Serializable;
-import java.util.concurrent.Callable;
+import configuracao.Tarefa;
 
 /**
  * Created by nando on 4/18/2017.
  */
-public class MatricesMultiplication implements Serializable,Runnable  {
+public class MatricesMultiplication implements configuracao.MatricesMultiplication, Tarefa {
     /**
 	 * 
 	 */
@@ -14,13 +13,18 @@ public class MatricesMultiplication implements Serializable,Runnable  {
     private double[] MatrixColumn;
     private Double result;
     private Callback CallbackTask;
+    private int Line;
+    private int Col;
+    private Result resultado;
 
-    public MatricesMultiplication(double[] Line, double[] Column, Callback newCbTask){
+    public MatricesMultiplication(double[] Line, double[] Column, int newLine, int newCol, Callback newCbTask){
         this.MatrixLine = Line;
         this.MatrixColumn = Column;
         this.CallbackTask = newCbTask;
-        this.result = null;
-        System.out.println("Hello");
+        this.Line = newLine;
+        this.Col = newCol;
+        this.result = 0.0;
+        this.resultado = new Result(this.Line, this.Col);
     }
 
     public void printMatrixLine(){
@@ -37,22 +41,17 @@ public class MatricesMultiplication implements Serializable,Runnable  {
 
     @Override
     public void run() {
-        System.out.println("Hello");
-        //this.execute();
-        for(int i = 0; i < this.MatrixLine.length; i++){
-            this.result += this.MatrixLine[i]*this.MatrixColumn[i];
-            System.out.println(this.result + this.MatrixLine[i] + this.MatrixColumn[i]);
-        }
-        Result resultado = this.CallbackTask.getResultado();
-        resultado.setResultado(result);
-        this.CallbackTask.entregaResultado(resultado);
+        this.execute();
     }
 
     public void execute(){
+
         for(int i = 0; i < this.MatrixLine.length; i++){
             this.result += this.MatrixLine[i]*this.MatrixColumn[i];
             System.out.println(this.result + this.MatrixLine[i] + this.MatrixColumn[i]);
         }
-
+        resultado.setResultado(result);
+        this.CallbackTask.entregaResultado(resultado, resultado.getLineResultado(), resultado.getColumnResultado());
+        this.CallbackTask.printMatrixResultado();
     }
 }

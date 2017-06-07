@@ -1,31 +1,32 @@
 package application;
 import java.rmi.RemoteException;
-import java.rmi.server.RemoteObject;
 import java.util.concurrent.*;
 import configuracao.Configuracao;
 
 /**
  * Created by Fernando && T�ssio on 5/30/17.
  */
-public class Executor extends RemoteObject implements Configuracao{
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	private  ExecutorService executor = null;
+public class Servidor implements Configuracao{
     private final int numOfThread;
+	private  ExecutorService executor = null;
 
-    public Executor(int newThreads){
+
+    public Servidor(int newThreads){
         this.numOfThread = newThreads;
         this.executor = Executors.newFixedThreadPool(this.numOfThread);
     }
 
-	public void execute(Runnable task) throws RemoteException {
+
+    public void execute(Runnable task) throws RemoteException {
 		// TODO Auto-generated method stub
-        //this.executor.execute((Runnable) task);
-        System.out.println("Hello");
+        //System.out.println("Hello");
         this.executor.submit(task);
 	}
+
+    @Override
+    public void shut_down() throws RemoteException {
+        this.executor.shutdown();
+
+    }
 }
 

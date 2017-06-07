@@ -1,7 +1,5 @@
 package application;
 
-import configuracao.Resultado;
-
 import java.io.Serializable;
 
 /**
@@ -9,30 +7,41 @@ import java.io.Serializable;
  */
 public class Callback implements Serializable,configuracao.Callback {
     private static final long serialVersionUID = 2L;
+    private  Double[][] resultado;
+    private int ResultDimension;
 
-    private Result resultado;
-
-    public Callback(Result newRsultado){
-        this.resultado = newRsultado;
+    public Callback(int newResultDimension){
+        this.ResultDimension = newResultDimension;
     }
 
-
-    @Override
-    public void entregaResultado(Result newResultado) {
-        if(this.resultado != null) {
-            this.resultado = newResultado;
-        } else {
-            System.out.println("Callback: Obj Resulado NULL");
+    public void inicializaMatriz(){
+        this.resultado = new Double[this.ResultDimension][this.ResultDimension];
+        for(int i = 0; i < this.ResultDimension; i++){
+            for(int j = 0; j < this.ResultDimension; j++){
+                this.resultado[i][j] = 0.0;
+            }
         }
     }
 
+    public void insereResultado(Result newResultado, int line, int column){
+        this.resultado[newResultado.getLineResultado()][newResultado.getColumnResultado()] = newResultado.getResultado();
+    }
+
     @Override
-    public Result getResultado() {
-        if(this.resultado != null) {
-            return this.resultado;
-        } else {
-            System.out.println("Callback: Obj Resulado NULL");
-            return null;
+    public void entregaResultado(Result newResultado, int line, int column) {
+        this.insereResultado(newResultado,line,column);
+    }
+
+    @Override
+    public Double[][] getResultado() {
+        return this.resultado;
+    }
+
+    public void printMatrixResultado(){
+        for(int i = 0; i < this.ResultDimension; i++){
+            for(int j = 0; j < this.ResultDimension; j++){
+                System.out.println(this.resultado[i][j]);
+            }
         }
     }
 }

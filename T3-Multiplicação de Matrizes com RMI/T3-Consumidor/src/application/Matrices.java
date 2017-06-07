@@ -1,5 +1,7 @@
 package application;
 import configuracao.Configuracao;
+import configuracao.Matrizes;
+
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -9,7 +11,7 @@ import java.util.concurrent.*;
 /**
  * Created by nando on 4/18/2017.
  */
-public class Matrices implements Serializable{
+public class Matrices implements Matrizes{
     /**
 	 * 
 	 */
@@ -63,15 +65,15 @@ public class Matrices implements Serializable{
         return this.matrices[matrix];
     }
 
-    public void Multiplication () throws RemoteException {
+    public void Multiplication () {
         this.setTime(System.currentTimeMillis());
         if(this.nMatrices < 2){
             System.out.println("Erro: numero de matrizes invalido!");
         }
         else if(this.nMatrices < 3){
-            this.result =  this.MultiplicationMatrices(this.getMatrix(0), this.getMatrix(1));
+                this.result = this.MultiplicationMatrices(this.getMatrix(0), this.getMatrix(1));
         } else{
-            this.result =  this.MultiplicationMatrices(this.getMatrix(0), this.getMatrix(1));
+                this.result = this.MultiplicationMatrices(this.getMatrix(0), this.getMatrix(1));
             for(int i = 2 ; i < this.nMatrices; i++) {
                 this.result = this.MultiplicationMatrices(result, this.getMatrix(i));
             }
@@ -80,42 +82,22 @@ public class Matrices implements Serializable{
         this.setTime(System.currentTimeMillis() - this.getTime());
     }
 
-    private Matrix MultiplicationMatrices(Matrix A, Matrix B) throws RemoteException {
-        //ExecutorService executor = Executors.newFixedThreadPool(this.MaxThreads);
-        //List<Future<Double>> list = new ArrayList<Future<Double>>();
-
+    public Matrix MultiplicationMatrices(Matrix A, Matrix B) {
+        this.cbTask = new Callback(this.dimension);
+        this.cbTask.inicializaMatriz();
         for(int i = 0; i < this.dimension; i++){
             for(int j = 0; j < this.dimension; j++) {
-                this.resultado = new Result(i, j);
-                this.cbTask = new Callback(resultado);
-                MatricesMultiplication task = new MatricesMultiplication(A.getLine(i), B.getColumn(j), cbTask);
-                this.object.execute(task);
-                System.out.println(this.resultado.getResultado());
-                //Callable<Double> task = new MatricesMultiplication(A.getLine(i), B.getColumn(j));
-                //Future<Double> submit = this.object.execute(task);
-                //Future<Double> submit = executor.submit(task);
-                //list.add(submit);
-            }
-        }
- /*        this.result = new Matrix(this.dimension);
-        this.result.initializingMatrix();
-
-        for(int i = 0; i < this.dimension; i++){
-            for(int j = 0; j < this.dimension; j++) {
-                System.out.println(this.resultado.getResultado());
-                //this.result.fillInMatrix(this.resultado.getResultado(),i ,j);
-
+                MatricesMultiplication task = new MatricesMultiplication(A.getLine(i), B.getColumn(j), i, j, cbTask);
                 try {
-                    //this.result.fillInMatrix(list.get(i*this.dimension + j).get(),i ,j);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
+                    this.object.execute(task);
+                } catch(RemoteException e){
+                    System.out.println("Consumidor: Erro ao executar o objeto remoto");
+                    System.exit(1);
                 }
+
             }
         }
-        //this.result.printMatrix();
-        executor.shutdown();*/
+        this.cbTask.printMatrixResultado();
         return this.result;
     }
 }
